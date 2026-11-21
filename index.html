@@ -1533,5 +1533,487 @@
     updateLivePreview();
     render();
   </script>
+  <!-- ADD-ON: Editorial Card Drawer (Paste right before </body>) -->
+<style>
+  #edAddonFab {
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 90;
+    background: #ffffff;
+    color: #090b0f;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    padding: 10px 15px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+  }
+
+  #edAddonModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(4px);
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  #edAddonModal.open {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .ed-modal-box {
+    width: 100%;
+    max-width: 520px;
+    background: #090a0d;
+    color: #f8fafc;
+    border: 1px solid #1e2330;
+    border-radius: 16px;
+    padding: 18px;
+    margin: 20px auto;
+  }
+
+  .ed-modal-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .ed-modal-top h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .ed-modal-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ed-modal-btn {
+    background: #141820;
+    color: #f8fafc;
+    border: 1px solid #262d3d;
+    border-radius: 8px;
+    padding: 7px 11px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .ed-modal-btn.light {
+    background: #ffffff;
+    color: #090b0f;
+    border-color: #ffffff;
+    font-weight: 600;
+  }
+
+  .ed-sheet {
+    background: #090a0d;
+    border: 1px solid #1b1f29;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ed-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ed-kicker-txt {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8e96a4;
+    font-weight: 600;
+  }
+
+  .ed-tag-box {
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #9aa2b1;
+    background: #141820;
+    border: 1px solid #1e2330;
+    padding: 4px 9px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .ed-main-title {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+
+  .ed-desc-txt {
+    margin: 6px 0 0;
+    font-size: 0.88rem;
+    color: #8e96a4;
+  }
+
+  .ed-sec-border {
+    border-top: 1px solid #1a1e28;
+    border-bottom: 1px solid #1a1e28;
+    padding: 12px 0;
+  }
+
+  .ed-micro-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8e96a4;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .ed-health-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .ed-pct-num {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .ed-pill-badge {
+    font-size: 0.74rem;
+    background: #141820;
+    border: 1px solid #1e2330;
+    color: #9aa2b1;
+    padding: 4px 10px;
+    border-radius: 7px;
+  }
+
+  .ed-track {
+    height: 7px;
+    background: #141820;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .ed-fill {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 999px;
+  }
+
+  .ed-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    border-bottom: 1px solid #1a1e28;
+    padding-bottom: 12px;
+  }
+
+  .ed-col-k {
+    font-size: 0.74rem;
+    color: #8e96a4;
+  }
+
+  .ed-col-v {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .ed-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ed-list li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.84rem;
+    color: #9aa2b1;
+  }
+
+  .ed-tick {
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 1px solid #2c4c3b;
+    color: #22c55e;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    flex-shrink: 0;
+  }
+</style>
+
+<button type="button" id="edAddonFab">Editorial Card</button>
+
+<div id="edAddonModal" aria-hidden="true">
+  <div class="ed-modal-box">
+    <div class="ed-modal-top">
+      <h3>Editorial Card View</h3>
+      <div class="ed-modal-actions">
+        <button type="button" class="ed-modal-btn" id="edSyncBtn">Sync Form</button>
+        <button type="button" class="ed-modal-btn light" id="edExportPngBtn">Download 2x PNG</button>
+        <button type="button" class="ed-modal-btn" id="edCloseBtn">Close</button>
+      </div>
+    </div>
+
+    <div class="ed-sheet" id="edSheetPreview">
+      <div class="ed-row-top">
+        <span class="ed-kicker-txt" id="edKicker">● INDEPENDENT PROJECT UPDATE / 04</span>
+        <span class="ed-tag-box" id="edStudioTag">NS / STUDIO</span>
+      </div>
+
+      <div>
+        <h4 class="ed-main-title" id="edTitle">First Monetization Milestone</h4>
+        <p class="ed-desc-txt" id="edSub">We've officially crossed into monetized territory with our first active subscription</p>
+      </div>
+
+      <div class="ed-sec-border">
+        <div class="ed-micro-label">PROJECT HEALTH</div>
+        <div class="ed-health-flex">
+          <span class="ed-pct-num" id="edPctText">68%</span>
+          <span class="ed-pill-badge" id="edStatusBadge">On track</span>
+        </div>
+        <div class="ed-track">
+          <div class="ed-fill" id="edBar" style="width:68%;"></div>
+        </div>
+      </div>
+
+      <div class="ed-two-col">
+        <div>
+          <div class="ed-col-k">Progress</div>
+          <div class="ed-col-v" id="edLeftVal">68% complete</div>
+        </div>
+        <div>
+          <div class="ed-col-k">Highlights</div>
+          <div class="ed-col-v" id="edRightVal">4 key updates</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ed-row-top" style="margin-bottom:8px;">
+          <span class="ed-micro-label" style="margin:0;">MILESTONES</span>
+          <span class="ed-micro-label" style="margin:0;" id="edCount">3/3</span>
+        </div>
+        <ul class="ed-list" id="edChecklist"></ul>
+      </div>
+
+      <div class="ed-col-k" id="edFoot">View project details ↗</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById("edAddonModal");
+    const fab = document.getElementById("edAddonFab");
+    const closeBtn = document.getElementById("edCloseBtn");
+    const syncBtn = document.getElementById("edSyncBtn");
+    const exportBtn = document.getElementById("edExportPngBtn");
+
+    function readFormData() {
+      const proj = document.getElementById("projectName")?.value.trim() || "Independent Project Update / 04";
+      const title = document.getElementById("milestoneTitle")?.value.trim() || "First Monetization Milestone";
+      const statusVal = document.getElementById("status")?.value || "completed";
+      const priorityVal = document.getElementById("priority")?.value || "High";
+      const dueVal = document.getElementById("dueDate")?.value || "";
+      const pctVal = Number(document.getElementById("progressPct")?.value ?? 68);
+      const rawNotes = document.getElementById("notes")?.value.trim() || "";
+
+      const lines = rawNotes.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+      const sub = lines[0] || "We've officially crossed into monetized territory with our first active subscription";
+      const rest = lines.slice(1).join(";");
+      const items = rest
+        ? rest.split(/[;•]+/).map((s) => s.trim()).filter(Boolean).slice(0, 4)
+        : ["Active Subscriptions: 1", "First subscriber conversion unlocked", "Core payout flow live"];
+
+      const statusMap = {
+        "planned": "Planned",
+        "in-progress": "On track",
+        "completed": "Completed",
+        "blocked": "Blocked"
+      };
+
+      return {
+        kicker: `● ${proj.toUpperCase()}`,
+        tag: "NS / STUDIO",
+        title,
+        sub,
+        pct: Math.max(0, Math.min(100, pctVal)),
+        statusLabel: `${statusMap[statusVal] || statusVal} · ${priorityVal}`,
+        rightMetric: `${items.length} key updates`,
+        items,
+        foot: dueVal ? `Target: ${dueVal} · View project details ↗` : "View project details ↗"
+      };
+    }
+
+    function renderEditorialAddon() {
+      const d = readFormData();
+      document.getElementById("edKicker").textContent = d.kicker;
+      document.getElementById("edStudioTag").textContent = d.tag;
+      document.getElementById("edTitle").textContent = d.title;
+      document.getElementById("edSub").textContent = d.sub;
+      document.getElementById("edPctText").textContent = `${d.pct}%`;
+      document.getElementById("edStatusBadge").textContent = d.statusLabel;
+      document.getElementById("edBar").style.width = `${d.pct}%`;
+      document.getElementById("edLeftVal").textContent = `${d.pct}% complete`;
+      document.getElementById("edRightVal").textContent = d.rightMetric;
+      document.getElementById("edCount").textContent = `${d.items.length}/${d.items.length}`;
+      document.getElementById("edFoot").textContent = d.foot;
+
+      const ul = document.getElementById("edChecklist");
+      ul.innerHTML = d.items
+        .map((txt) => `<li><span class="ed-tick">✓</span><span>${txt.replace(/</g, "&lt;")}</span></li>`)
+        .join("");
+    }
+
+    function exportEditorial2xPng() {
+      const d = readFormData();
+      const scale = 2;
+      const w = 1080;
+      const h = 1350;
+      const canvas = document.createElement("canvas");
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+
+      ctx.fillStyle = "#060709";
+      ctx.fillRect(0, 0, w, h);
+
+      const pad = 54;
+      const cw = w - pad * 2;
+      const ch = h - pad * 2;
+      ctx.fillStyle = "#090a0d";
+      ctx.strokeStyle = "#1b1f29";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(pad, pad, cw, ch, 26);
+      ctx.fill();
+      ctx.stroke();
+
+      let y = pad + 56;
+      const x = pad + 44;
+      const maxW = cw - 88;
+
+      ctx.fillStyle = "#8e96a4";
+      ctx.font = "600 18px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(d.kicker, x, y);
+
+      ctx.font = "600 17px -apple-system, BlinkMacSystemFont, sans-serif";
+      const tw = ctx.measureText(d.tag).width + 28;
+      ctx.fillStyle = "#141820";
+      ctx.beginPath();
+      ctx.roundRect(x + maxW - tw, y - 22, tw, 36, 8);
+      ctx.fill();
+      ctx.fillStyle = "#9aa2b1";
+      ctx.fillText(d.tag, x + maxW - tw + 14, y + 2);
+
+      y += 66;
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "700 50px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(d.title.slice(0, 34), x, y);
+
+      y += 46;
+      ctx.fillStyle = "#8e96a4";
+      ctx.font = "400 24px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(d.sub.slice(0, 58), x, y);
+
+      y += 42;
+      ctx.fillStyle = "#8e96a4";
+      ctx.font = "600 18px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("PROJECT HEALTH", x, y);
+
+      y += 54;
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "700 64px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(`${d.pct}%`, x, y);
+
+      y += 32;
+      ctx.fillStyle = "#141820";
+      ctx.beginPath();
+      ctx.roundRect(x, y, maxW, 12, 6);
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.roundRect(x, y, Math.max(12, Math.round((maxW * d.pct) / 100)), 12, 6);
+      ctx.fill();
+
+      y += 64;
+      ctx.fillStyle = "#8e96a4";
+      ctx.font = "500 20px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("Progress", x, y);
+      ctx.fillText("Highlights", x + maxW / 2, y);
+
+      y += 32;
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "600 26px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(`${d.pct}% complete`, x, y);
+      ctx.fillText(d.rightMetric, x + maxW / 2, y);
+
+      y += 64;
+      ctx.fillStyle = "#8e96a4";
+      ctx.font = "600 18px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText("MILESTONES", x, y);
+
+      y += 38;
+      for (const item of d.items) {
+        ctx.strokeStyle = "#22c55e";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x + 12, y - 6, 12, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = "#9aa2b1";
+        ctx.font = "400 22px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(item.slice(0, 52), x + 36, y);
+        y += 42;
+      }
+
+      ctx.fillStyle = "#8e96a4";
+      ctx.font = "400 20px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(d.foot, x, pad + ch - 42);
+
+      const a = document.createElement("a");
+      a.download = "editorial-milestone-2x.png";
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    }
+
+    fab.addEventListener("click", () => {
+      renderEditorialAddon();
+      modal.classList.add("open");
+    });
+    closeBtn.addEventListener("click", () => modal.classList.remove("open"));
+    syncBtn.addEventListener("click", renderEditorialAddon);
+    exportBtn.addEventListener("click", exportEditorial2xPng);
+  })();
+</script>
+<!-- END ADD-ON -->
+
 </body>
 </html>
