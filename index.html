@@ -3,1897 +3,1258 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Milestone Card Studio</title>
+  <title>showcaseify. — Milestone & Story Studio</title>
   <style>
     :root {
-      --bg: #070b14;
-      --surface: #0f172a;
-      --card: #1e293b;
-      --card-hover: #263449;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --border: #334155;
-      --accent: #38bdf8;
-      --accent-dark: #0284c7;
-      --planned: #a855f7;
-      --progress: #f59e0b;
-      --done: #22c55e;
-      --blocked: #ef4444;
+      --bg: #05070a;
+      --surface: #0a0d12;
+      --card: #0e1219;
+      --card-2: #131822;
+      --text: #f5f7fa;
+      --muted: #8a93a2;
+      --line: #1b212c;
+      --cyan: #18c4d8;
+      --cyan-bright: #22d3ee;
+      --cyan-ink: #041014;
+      --ok: #22c55e;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding: 16px;
+      padding-bottom: 48px;
     }
 
-    .app {
-      max-width: 1120px;
-      margin: 0 auto;
-    }
-
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      letter-spacing: -0.02em;
-    }
-
-    .subtitle {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    .top-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    button, select, input, textarea {
+    button, input, textarea, select {
       font-family: inherit;
-      font-size: 0.9rem;
+      color: inherit;
     }
 
     button {
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      padding: 8px 12px;
-      border-radius: 9px;
       cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+    }
+
+    button:active { transform: scale(0.99); }
+
+    /* Top Bar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(5, 7, 10, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 16px;
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--cyan);
+      color: var(--cyan-ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 6px 11px;
+      font-size: 0.82rem;
+      color: var(--muted);
       font-weight: 500;
-      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
     }
 
-    button:hover {
-      background: var(--card-hover);
+    .nav-btn.active, .nav-btn:hover {
+      color: var(--text);
+      border-color: #2b3445;
+      background: var(--card-2);
     }
 
-    button:active {
-      transform: scale(0.99);
+    .pro-pill {
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #fcd34d;
     }
 
-    button.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #06131e;
-      font-weight: 600;
+    .avatar-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: #134e5e;
+      color: #a5f3fc;
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      font-weight: 700;
+      font-size: 0.82rem;
     }
 
-    button.primary:hover {
-      background: var(--accent-dark);
-      border-color: var(--accent-dark);
-      color: #ffffff;
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px;
     }
 
-    button.danger {
-      border-color: rgba(239, 68, 68, 0.45);
-      color: #fca5a5;
-      background: rgba(239, 68, 68, 0.1);
-    }
-
-    button.danger:hover {
-      background: rgba(239, 68, 68, 0.22);
-    }
-
-    button.recording {
-      background: rgba(239, 68, 68, 0.22);
-      border-color: #ef4444;
-      color: #fecaca;
-      animation: pulse 1.2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.65; }
-    }
-
-    .stats-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 18px;
-    }
-
-    .stats-row {
+    .promo-strip {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-      font-size: 0.88rem;
-    }
-
-    .progress-track {
-      width: 100%;
-      height: 8px;
-      background: var(--card);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--done));
-      transition: width 0.25s ease;
-    }
-
-    /* Studio Split Layout */
-    .studio-layout {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 18px;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      font-size: 0.82rem;
+      color: var(--muted);
       margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .promo-strip a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Hero */
+    .step-kicker {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(1.85rem, 4vw, 2.75rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+
+    .hero-title span { color: var(--cyan); }
+
+    .hero-sub {
+      margin: 8px 0 24px;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 22px;
       align-items: start;
     }
 
-    @media (max-width: 860px) {
-      .studio-layout {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 920px) {
+      .main-grid { grid-template-columns: 1fr; }
     }
 
-    .panel {
+    .section-block {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section-num {
+      font-weight: 700;
+      font-size: 0.98rem;
+      margin-right: 6px;
+    }
+
+    .section-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* 01 Mode Tabs */
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: #07090d;
+      padding: 6px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      margin-bottom: 12px;
+    }
+
+    .mode-tab {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .mode-tab.active {
+      background: var(--card-2);
+      border-color: #2c3547;
+      color: var(--text);
+    }
+
+    .mode-pane { display: none; }
+    .mode-pane.active { display: block; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 540px) {
+      .field-row { grid-template-columns: 1fr; }
+    }
+
+    label {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    input[type="text"], input[type="number"], textarea, select {
+      width: 100%;
+      background: #07090d;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 0.88rem;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+
+    textarea.story-box {
+      min-height: 138px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .counter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .upload-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .btn-ghost:hover { background: var(--card-2); }
+
+    /* 02 Scene / Format Grid */
+    .scene-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 520px) {
+      .scene-grid { grid-template-columns: 1fr; }
+    }
+
+    .scene-card {
+      text-align: left;
+      background: #07090d;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px;
+    }
+
+    .scene-card.selected {
+      border-color: var(--cyan);
+      background: rgba(24, 196, 216, 0.06);
+    }
+
+    .scene-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .scene-desc {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    /* 03 Find Your Look */
+    .look-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 520px) {
+      .look-grid { grid-template-columns: 1fr; }
+    }
+
+    .look-chip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background: #07090d;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      font-weight: 500;
+    }
+
+    .look-chip.selected {
+      border-color: var(--cyan);
+      background: rgba(24, 196, 216, 0.06);
+    }
+
+    .swatches {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .density-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .density-btn {
+      background: #07090d;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .density-btn.active {
+      background: var(--card-2);
+      border-color: #344054;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .cta-showcase {
+      width: 100%;
+      background: var(--cyan);
+      color: var(--cyan-ink);
+      border: none;
+      border-radius: 11px;
+      padding: 13px 16px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 28px rgba(24, 196, 216, 0.22);
+    }
+
+    .cta-showcase:hover { background: var(--cyan-bright); }
+
+    .cta-note {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* Right Column: Canvas & Live Preview */
+    .canvas-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .live-dot::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--cyan);
+    }
+
+    .canvas-toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .ready-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .showcase-frame {
+      background: #07090d;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .banner-box {
+      position: relative;
+      min-height: 175px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background:
+        linear-gradient(180deg, rgba(7, 9, 13, 0.25) 0%, rgba(7, 9, 13, 0.92) 100%),
+        radial-gradient(circle at 75% 25%, rgba(24, 196, 216, 0.35), rgba(15, 23, 42, 0.95));
+      background-size: cover;
+      background-position: center;
+    }
+
+    .corner-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(7, 9, 13, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 7px;
+      padding: 4px 9px;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .sc-kicker {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .sc-title {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+    }
+
+    .sc-sub {
+      margin: 6px 0 0;
+      font-size: 0.86rem;
+      color: #cbd5e1;
+    }
+
+    .sc-body { padding: 18px; }
+    .showcase-frame.compact .sc-body { padding: 13px; }
+    .showcase-frame.minimal .sc-list { display: none; }
+
+    .health-box {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 0;
+      margin-bottom: 14px;
+    }
+
+    .health-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin: 6px 0 10px;
+    }
+
+    .health-num {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .health-pill {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 4px 9px;
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .bar-bg {
+      height: 7px;
+      border-radius: 999px;
+      background: var(--card-2);
+      overflow: hidden;
+    }
+
+    .bar-val {
+      height: 100%;
+      background: var(--cyan);
+      border-radius: 999px;
+      transition: width 0.2s ease;
+    }
+
+    .two-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+
+    .metric-lbl { font-size: 0.74rem; color: var(--muted); }
+    .metric-val { font-size: 0.95rem; font-weight: 600; margin-top: 2px; }
+
+    .sc-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sc-list li {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.84rem;
+      color: #cbd5e1;
+    }
+
+    .tick-ring {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: var(--ok);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+
+    .meta-summary {
+      margin-top: 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Saved Projects Drawer/Section */
+    .saved-section {
+      margin-top: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
       border-radius: 14px;
       padding: 16px;
     }
 
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .panel-title {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    /* Quick Create Tabs (Text-to-Card & Audio-to-Card) */
-    .quick-create-box {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px dashed var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 14px;
-    }
-
-    .quick-tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .tab-btn {
-      padding: 5px 10px;
-      font-size: 0.8rem;
-      border-radius: 7px;
-    }
-
-    .tab-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #06131e;
-      font-weight: 600;
-    }
-
-    .quick-pane {
-      display: none;
-    }
-
-    .quick-pane.active {
-      display: block;
-    }
-
-    .hint-text {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin: 0 0 8px;
-    }
-
-    .form-grid {
+    .saved-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-      gap: 11px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    input, select, textarea {
-      background: var(--card);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 8px 10px;
-      width: 100%;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    textarea {
-      min-height: 68px;
-      resize: vertical;
-    }
-
-    .slider-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .slider-row input[type="range"] {
-      padding: 0;
-      accent-color: var(--accent);
-    }
-
-    .form-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    /* Live Preview Stage */
-    .preview-stage {
-      border-radius: 14px;
-      padding: 22px;
-      min-height: 290px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      transition: all 0.25s ease;
-    }
-
-    /* Scene Backgrounds */
-    .scene-studio {
-      background: radial-gradient(circle at top right, #1e293b, #090d16 75%);
-    }
-    .scene-aurora {
-      background: linear-gradient(135deg, #064e3b 0%, #0f172a 48%, #312e81 100%);
-    }
-    .scene-sunset {
-      background: linear-gradient(135deg, #7c2d12 0%, #4c1d95 55%, #0f172a 100%);
-    }
-    .scene-cyber {
-      background:
-        linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-        radial-gradient(circle at 20% 20%, #0c4a6e, #050811 80%);
-      background-size: 22px 22px, 22px 22px, 100% 100%;
-    }
-    .scene-paper {
-      background: linear-gradient(145deg, #f8fafc, #e2e8f0);
-      color: #0f172a;
-      border-color: #cbd5e1;
-    }
-
-    /* Themes (Card Surface + Accent) */
-    .live-card-shell {
-      border-radius: 14px;
-      padding: 18px;
-      backdrop-filter: blur(10px);
-      transition: all 0.2s ease;
-    }
-
-    .theme-midnight .live-card-shell {
-      background: rgba(15, 23, 42, 0.82);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      color: #f8fafc;
-      --card-accent: #38bdf8;
-    }
-    .theme-emerald .live-card-shell {
-      background: rgba(6, 32, 24, 0.84);
-      border: 1px solid rgba(52, 211, 153, 0.4);
-      color: #ecfdf5;
-      --card-accent: #34d399;
-    }
-    .theme-royal .live-card-shell {
-      background: rgba(28, 19, 54, 0.84);
-      border: 1px solid rgba(192, 132, 252, 0.42);
-      color: #faf5ff;
-      --card-accent: #c084fc;
-    }
-    .theme-amber .live-card-shell {
-      background: rgba(38, 22, 10, 0.85);
-      border: 1px solid rgba(251, 191, 36, 0.42);
-      color: #fffbeb;
-      --card-accent: #fbbf24;
-    }
-    .theme-minimal .live-card-shell {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid #cbd5e1;
-      color: #0f172a;
-      --card-accent: #0284c7;
-    }
-
-    .preview-project {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--card-accent, #38bdf8);
-    }
-
-    .preview-title {
-      margin: 4px 0 8px;
-      font-size: 1.25rem;
-      line-height: 1.3;
-    }
-
-    .preview-notes {
-      margin: 0 0 14px;
-      font-size: 0.88rem;
-      opacity: 0.86;
-      white-space: pre-line;
-    }
-
-    .preview-bar-wrap {
-      margin-bottom: 12px;
-    }
-
-    .preview-bar-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.76rem;
-      margin-bottom: 4px;
-      opacity: 0.85;
-    }
-
-    .preview-bar {
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.25);
-      overflow: hidden;
-    }
-
-    .preview-bar-fill {
-      height: 100%;
-      background: var(--card-accent, #38bdf8);
-      transition: width 0.2s ease;
-    }
-
-    .preview-footer {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 0.78rem;
-      opacity: 0.82;
-      border-top: 1px solid rgba(148, 163, 184, 0.22);
-      padding-top: 10px;
-    }
-
-    .ai-prompt-box {
-      margin-top: 12px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-    }
-
-    .ai-prompt-text {
-      margin: 4px 0 8px;
-      font-size: 0.82rem;
-      color: #cbd5e1;
-      line-height: 1.45;
-    }
-
-    .badge {
-      font-size: 0.74rem;
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .status-planned { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
-    .status-in-progress { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
-    .status-completed { background: rgba(34, 197, 94, 0.2); color: #86efac; }
-    .status-blocked { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
-
-    /* Saved Cards Section */
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .filter-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #06131e;
-      font-weight: 600;
-    }
-
-    .search-box {
-      min-width: 210px;
-      flex: 0 1 260px;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
-      gap: 14px;
-    }
-
-    .milestone-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 12px;
+      margin-top: 12px;
     }
 
-    .card-top {
+    .saved-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px;
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .project-tag {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .milestone-title {
-      margin: 4px 0 0;
-      font-size: 1.05rem;
-    }
-
-    .notes {
-      margin: 0;
-      color: #cbd5e1;
-      font-size: 0.88rem;
-      white-space: pre-line;
-    }
-
-    .meta {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 0.78rem;
-      color: var(--muted);
-      border-top: 1px solid rgba(148, 163, 184, 0.15);
-      padding-top: 9px;
-    }
-
-    .card-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .card-actions button {
-      padding: 5px 9px;
-      font-size: 0.8rem;
-    }
-
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 36px 16px;
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: 14px;
-      color: var(--muted);
+      gap: 10px;
     }
 
     .toast {
       position: fixed;
       bottom: 18px;
       right: 18px;
-      background: #0f172a;
-      color: #f8fafc;
-      border: 1px solid var(--accent);
+      z-index: 80;
+      background: #0c1017;
+      border: 1px solid var(--cyan);
+      color: var(--text);
       padding: 10px 14px;
       border-radius: 10px;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       opacity: 0;
       transform: translateY(8px);
       transition: all 0.2s ease;
       pointer-events: none;
-      z-index: 60;
     }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div>
-        <h1>Milestone Card Studio</h1>
-        <p class="subtitle">Design milestone cards with live preview, themes, scenes, PNG export, AI prompts, text & voice input.</p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">S</span>
+        <span>showcaseify.</span>
       </div>
-      <div class="top-actions">
-        <button type="button" id="copySummaryBtn">Copy Update</button>
-        <button type="button" id="exportBtn">Export JSON</button>
-        <button type="button" id="importTriggerBtn">Import JSON</button>
-        <input type="file" id="importFileInput" accept="application/json" hidden />
+      <div class="nav-pills">
+        <button type="button" class="nav-btn active" id="navStudio">Studio</button>
+        <button type="button" class="nav-btn" id="navProjects">My projects (<span id="savedCount">0</span>)</button>
+        <button type="button" class="nav-btn pro-pill" id="navPro">Get Pro</button>
+        <button type="button" class="avatar-btn" title="Showcaseify Studio">S</button>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <section class="stats-card">
-      <div class="stats-row">
-        <span id="statsText">0 of 0 milestones completed (0%)</span>
-        <span id="statusCounts">Planned: 0 · In Progress: 0 · Completed: 0 · Blocked: 0</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-    </section>
-
-    <section class="studio-layout">
-      <!-- Left: Builder + Smart Input -->
-      <div class="panel">
-        <div class="panel-header">
-          <h2 class="panel-title" id="formHeading">Card Builder</h2>
-          <span style="font-size:0.78rem;color:var(--muted);">Auto-updates Live Preview</span>
-        </div>
-
-        <!-- Text-to-Card & Audio-to-Card -->
-        <div class="quick-create-box">
-          <div class="quick-tabs">
-            <button type="button" class="tab-btn active" data-tab="textTab">Text to Card</button>
-            <button type="button" class="tab-btn" data-tab="audioTab">Audio to Card</button>
-          </div>
-
-          <div class="quick-pane active" id="textTab">
-            <p class="hint-text">Paste a sentence or shorthand like: <em>"Starloom: Launch payment webhook | High | In Progress | 75% | Due 2026-12-01"</em></p>
-            <textarea id="quickTextInput" placeholder="Project: Milestone title | Priority | Status | 60% | Notes..."></textarea>
-            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
-              <button type="button" id="parseTextBtn">Fill Card from Text</button>
-              <button type="button" class="primary" id="parseAndSaveTextBtn">Create Card Instantly</button>
-            </div>
-          </div>
-
-          <div class="quick-pane" id="audioTab">
-            <p class="hint-text">Speak naturally (e.g., <em>"Project Starloom, milestone checkout integration, high priority, in progress, notes test webhook events"</em>).</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-              <button type="button" id="recordAudioBtn">Start Voice Input</button>
-              <button type="button" id="applyAudioBtn">Fill Card from Transcript</button>
-            </div>
-            <textarea id="audioTranscript" placeholder="Your spoken words will appear here (or type/edit manually if voice isn't supported)..."></textarea>
-          </div>
-        </div>
-
-        <form id="milestoneForm">
-          <input type="hidden" id="editId" />
-          <div class="form-grid">
-            <div class="field">
-              <label for="projectName">Project Name *</label>
-              <input id="projectName" type="text" placeholder="e.g., Starloom SaaS" required />
-            </div>
-            <div class="field">
-              <label for="milestoneTitle">Milestone Title *</label>
-              <input id="milestoneTitle" type="text" placeholder="e.g., Payout & Webhook Setup" required />
-            </div>
-            <div class="field">
-              <label for="status">Status</label>
-              <select id="status">
-                <option value="planned">Planned</option>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
-                <option value="blocked">Blocked</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="priority">Priority</label>
-              <select id="priority">
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="dueDate">Target Date</label>
-              <input id="dueDate" type="date" />
-            </div>
-            <div class="field">
-              <label for="progressPct">Milestone Progress (<span id="progressPctLabel">35%</span>)</label>
-              <div class="slider-row">
-                <input id="progressPct" type="range" min="0" max="100" step="5" value="35" />
-              </div>
-            </div>
-            <div class="field">
-              <label for="cardTheme">Card Theme</label>
-              <select id="cardTheme">
-                <option value="midnight">Midnight Cyan</option>
-                <option value="emerald">Emerald Matrix</option>
-                <option value="royal">Royal Violet</option>
-                <option value="amber">Amber Gold</option>
-                <option value="minimal">Clean Light</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="cardScene">Backdrop Scene</label>
-              <select id="cardScene">
-                <option value="studio">Dark Studio</option>
-                <option value="aurora">Northern Aurora</option>
-                <option value="sunset">Sunset Horizon</option>
-                <option value="cyber">Cyber Blueprint Grid</option>
-                <option value="paper">Soft Paper Desk</option>
-              </select>
-            </div>
-            <div class="field full">
-              <label for="notes">Deliverables / Notes</label>
-              <textarea id="notes" placeholder="Key deliverables, blockers, or release notes..."></textarea>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="primary" id="saveBtn">Save Milestone Card</button>
-            <button type="button" id="cancelEditBtn" style="display:none;">Cancel Edit</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Right: Live Preview + Download + AI Visual Prompt -->
-      <div class="panel">
-        <div class="panel-header">
-          <h2 class="panel-title">Live Card Preview</h2>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button type="button" class="primary" id="downloadPngBtn">Download PNG</button>
-          </div>
-        </div>
-
-        <div class="preview-stage scene-studio theme-midnight" id="previewStage">
-          <div class="live-card-shell">
-            <div class="card-top">
-              <div>
-                <div class="preview-project" id="prevProject">STARLOOM SAAS</div>
-                <h3 class="preview-title" id="prevTitle">Payout & Webhook Setup</h3>
-              </div>
-              <span class="badge status-in-progress" id="prevBadge">In Progress</span>
-            </div>
-
-            <p class="preview-notes" id="prevNotes">Configure live webhook verification and test customer billing receipts.</p>
-
-            <div class="preview-bar-wrap">
-              <div class="preview-bar-label">
-                <span>Completion</span>
-                <span id="prevPctText">35%</span>
-              </div>
-              <div class="preview-bar">
-                <div class="preview-bar-fill" id="prevBarFill" style="width:35%;"></div>
-              </div>
-            </div>
-
-            <div class="preview-footer">
-              <span id="prevPriority">Priority: Medium</span>
-              <span id="prevDate">No target date</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="ai-prompt-box">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-            <strong style="font-size:0.84rem;">AI Visual Prompt (for Cover Art / Social Card)</strong>
-            <div style="display:flex;gap:6px;">
-              <button type="button" id="regenPromptBtn" style="padding:4px 9px;font-size:0.78rem;">Refresh Style</button>
-              <button type="button" id="copyPromptBtn" style="padding:4px 9px;font-size:0.78rem;">Copy Prompt</button>
-            </div>
-          </div>
-          <p class="ai-prompt-text" id="aiPromptOutput"></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Saved Cards Gallery -->
-    <div class="toolbar">
-      <div class="filters" id="filterBar">
-        <button type="button" class="filter-btn active" data-filter="all">All</button>
-        <button type="button" class="filter-btn" data-filter="planned">Planned</button>
-        <button type="button" class="filter-btn" data-filter="in-progress">In Progress</button>
-        <button type="button" class="filter-btn" data-filter="completed">Completed</button>
-        <button type="button" class="filter-btn" data-filter="blocked">Blocked</button>
-      </div>
-      <input type="search" class="search-box" id="searchInput" placeholder="Search saved milestones..." />
+  <main class="wrap">
+    <div class="promo-strip">
+      <span>Your next good thing, made visible.</span>
+      <a href="#builder">Make it yours →</a>
     </div>
 
-    <section class="cards-grid" id="cardsGrid"></section>
-  </div>
+    <div class="step-kicker">SHOWCASE STUDIO — 01 / 04</div>
+    <h1 class="hero-title">Make good work <span>visible.</span></h1>
+    <p class="hero-sub">Turn your latest progress into a story worth sharing.</p>
+
+    <div class="main-grid" id="builder">
+      <!-- Left Controls -->
+      <div>
+        <section class="section-block">
+          <div class="section-head">
+            <div><span class="section-num">01</span> <strong>Start with the story</strong></div>
+            <span class="section-sub">Write or add audio</span>
+          </div>
+
+          <div class="mode-tabs">
+            <button type="button" class="mode-tab active" data-mode="write">Write</button>
+            <button type="button" class="mode-tab" data-mode="voice">Voice note</button>
+            <button type="button" class="mode-tab" data-mode="ai">AI visual</button>
+          </div>
+
+          <div class="field-row">
+            <div>
+              <label for="projectTitle">Project / Headline</label>
+              <input id="projectTitle" type="text" value="Northstar Studio" />
+            </div>
+            <div>
+              <label for="kickerTag">Update Label</label>
+              <input id="kickerTag" type="text" value="INDEPENDENT PROJECT UPDATE / 04" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div>
+              <label for="healthPct">Health / Progress (%)</label>
+              <input id="healthPct" type="number" min="0" max="100" value="82" />
+            </div>
+            <div>
+              <label for="metricRight">Right Metric</label>
+              <input id="metricRight" type="text" value="$10k MRR" />
+            </div>
+          </div>
+
+          <div class="mode-pane active" id="pane-write">
+            <label for="storyInput">Story & Milestone Bullets</label>
+            <textarea id="storyInput" class="story-box" maxlength="5000">A thoughtful new platform for turning complex analytics into confident decisions.
+• Product beta is live with five launch partners
+• Design system and onboarding are complete
+• Revenue reached $10k MRR this quarter
+• The team is 82% through the launch roadmap</textarea>
+            <div class="counter-row">
+              <span>SaaS · Product design · Q4 launch</span>
+              <span id="charCounter">0 / 5000</span>
+            </div>
+          </div>
+
+          <div class="mode-pane" id="pane-voice">
+            <label for="voiceTranscript">Voice Note Transcript</label>
+            <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+              <button type="button" class="btn-ghost" id="voiceBtn">Start Voice Dictation</button>
+              <button type="button" class="btn-ghost" id="applyVoiceBtn">Insert into Story</button>
+            </div>
+            <textarea id="voiceTranscript" class="story-box" placeholder="Speak or type your spoken project update..."></textarea>
+          </div>
+
+          <div class="mode-pane" id="pane-ai">
+            <label for="aiPromptBox">AI Visual Scene Prompt</label>
+            <textarea id="aiPromptBox" class="story-box" placeholder="Describe the visual scene for your showcase backdrop..."></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+              <button type="button" class="btn-ghost" id="genAiPromptBtn">Generate Prompt from Story</button>
+              <button type="button" class="btn-ghost" id="copyAiPromptBtn">Copy Prompt</button>
+            </div>
+          </div>
+
+          <div class="upload-strip">
+            <div>
+              <div style="font-size:0.84rem;font-weight:600;">Product image</div>
+              <div style="font-size:0.74rem;color:var(--muted);">Use your own photo as the background · JPG, PNG, WebP</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button type="button" class="btn-ghost" id="uploadPhotoBtn">↑ Upload photo</button>
+              <button type="button" class="btn-ghost" id="clearPhotoBtn">Reset bg</button>
+              <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" hidden />
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-head">
+            <div><span class="section-num">02</span> <strong>Set the scene</strong></div>
+            <span class="section-sub">PICK A FORMAT</span>
+          </div>
+          <div class="scene-grid" id="sceneGrid">
+            <button type="button" class="scene-card" data-scene="Progress dashboard">
+              <div class="scene-name">Progress dashboard</div>
+              <div class="scene-desc">Milestones and live metrics</div>
+            </button>
+            <button type="button" class="scene-card selected" data-scene="Project showcase">
+              <div class="scene-name">Project showcase</div>
+              <div class="scene-desc">A polished project story</div>
+            </button>
+            <button type="button" class="scene-card" data-scene="Social carousel">
+              <div class="scene-name">Social carousel</div>
+              <div class="scene-desc">A concise, shareable recap</div>
+            </button>
+            <button type="button" class="scene-card" data-scene="Client milestones">
+              <div class="scene-name">Client milestones</div>
+              <div class="scene-desc">A clear client update</div>
+            </button>
+            <button type="button" class="scene-card" data-scene="Before vs. After">
+              <div class="scene-name">Before vs. After</div>
+              <div class="scene-desc">Show progress side by side</div>
+            </button>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-head">
+            <div><span class="section-num">03</span> <strong>Find your look</strong></div>
+            <span class="section-sub">Studio presets</span>
+          </div>
+
+          <div class="look-grid" id="lookGrid">
+            <button type="button" class="look-chip selected" data-look="After hours" data-accent="#18c4d8" data-bg="#07090d">
+              <span>After hours</span>
+              <span class="swatches"><i class="swatch" style="background:#090d16"></i><i class="swatch" style="background:#1e293b"></i><i class="swatch" style="background:#22d3ee"></i></span>
+            </button>
+            <button type="button" class="look-chip" data-look="Night bloom" data-accent="#c084fc" data-bg="#0b0814">
+              <span>Night bloom</span>
+              <span class="swatches"><i class="swatch" style="background:#a855f7"></i><i class="swatch" style="background:#ec4899"></i><i class="swatch" style="background:#38bdf8"></i></span>
+            </button>
+            <button type="button" class="look-chip" data-look="Soft focus" data-accent="#f9a8d4" data-bg="#120d14">
+              <span>Soft focus</span>
+              <span class="swatches"><i class="swatch" style="background:#f9a8d4"></i><i class="swatch" style="background:#86efac"></i><i class="swatch" style="background:#f8fafc"></i></span>
+            </button>
+            <button type="button" class="look-chip" data-look="Studio mono" data-accent="#ffffff" data-bg="#060708">
+              <span>Studio mono</span>
+              <span class="swatches"><i class="swatch" style="background:#ffffff"></i><i class="swatch" style="background:#52525b"></i><i class="swatch" style="background:#18181b"></i></span>
+            </button>
+          </div>
+
+          <div class="density-row" id="densityRow">
+            <span style="font-size:0.78rem;color:var(--muted);margin-right:4px;">Layout</span>
+            <button type="button" class="density-btn" data-density="minimal">Minimal</button>
+            <button type="button" class="density-btn active" data-density="grid">Grid</button>
+            <button type="button" class="density-btn" data-density="compact">Compact</button>
+          </div>
+
+          <button type="button" class="cta-showcase" id="makeShowcaseBtn">
+            <span>✦ Make it a showcase</span>
+            <span>→</span>
+          </button>
+          <div class="cta-note">Your text stays editable. Saved locally in your browser.</div>
+        </section>
+      </div>
+
+      <!-- Right Live Preview Canvas -->
+      <div>
+        <div class="canvas-header">
+          <strong style="font-size:1rem;">Your canvas</strong>
+          <span class="live-dot">Live preview</span>
+        </div>
+
+        <div class="canvas-toolbar">
+          <button type="button" class="btn-ghost" id="copySummaryBtn">Copy summary</button>
+          <button type="button" class="btn-ghost" id="saveProjectBtn">Save to My projects</button>
+          <button type="button" class="btn-ghost" id="downloadPngBtn">↓ Download PNG</button>
+        </div>
+
+        <div class="ready-strip">
+          <span>Desktop · mobile ready</span>
+          <span style="color:#22c55e;">● Local draft active</span>
+        </div>
+
+        <article class="showcase-frame" id="showcaseFrame">
+          <div class="banner-box" id="bannerBox">
+            <span class="corner-badge">NS / STUDIO</span>
+            <div class="sc-kicker" id="prevKicker">● INDEPENDENT PROJECT UPDATE / 04</div>
+            <h2 class="sc-title" id="prevTitle">Northstar Studio</h2>
+            <p class="sc-sub" id="prevSub">A thoughtful new platform for turning complex analytics into confident decisions.</p>
+          </div>
+
+          <div class="sc-body">
+            <div class="health-box">
+              <div class="metric-lbl" style="letter-spacing:0.12em;text-transform:uppercase;font-size:0.68rem;">PROJECT HEALTH</div>
+              <div class="health-top">
+                <span class="health-num" id="prevPct">82%</span>
+                <span class="health-pill" id="prevScenePill">Project showcase · ↗ 12%</span>
+              </div>
+              <div class="bar-bg">
+                <div class="bar-val" id="prevBar" style="width:82%;"></div>
+              </div>
+            </div>
+
+            <div class="two-metrics">
+              <div>
+                <div class="metric-lbl">Progress</div>
+                <div class="metric-val" id="prevLeftMetric">82% launch ready</div>
+              </div>
+              <div>
+                <div class="metric-lbl">Revenue</div>
+                <div class="metric-val" id="prevRightMetric">$10k MRR</div>
+              </div>
+            </div>
+
+            <ul class="sc-list" id="prevBullets"></ul>
+          </div>
+        </article>
+
+        <div class="meta-summary">
+          <div>
+            <div class="metric-lbl" style="text-transform:uppercase;font-size:0.68rem;letter-spacing:0.1em;">STORY</div>
+            <div class="metric-val" id="metaStory">Project showcase</div>
+          </div>
+          <div>
+            <div class="metric-lbl" style="text-transform:uppercase;font-size:0.68rem;letter-spacing:0.1em;">STYLE</div>
+            <div class="metric-val" id="metaStyle">After hours</div>
+          </div>
+          <div>
+            <div class="metric-lbl" style="text-transform:uppercase;font-size:0.68rem;letter-spacing:0.1em;">PROGRESS</div>
+            <div class="metric-val" id="metaProgress">82% complete</div>
+          </div>
+          <div>
+            <div class="metric-lbl" style="text-transform:uppercase;font-size:0.68rem;letter-spacing:0.1em;">STORAGE</div>
+            <div class="metric-val">Local browser</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="saved-section" id="savedProjectsSection">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <strong>My projects</strong>
+        <button type="button" class="btn-ghost" id="exportJsonBtn">Export JSON</button>
+      </div>
+      <div class="saved-grid" id="savedGrid"></div>
+    </section>
+  </main>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    const STORAGE_KEY = "milestone_studio_v2";
-
-    const STATUS_LABELS = {
-      "planned": "Planned",
-      "in-progress": "In Progress",
-      "completed": "Completed",
-      "blocked": "Blocked"
+    const STORE_KEY = "showcaseify_local_projects_v1";
+    let state = {
+      scene: "Project showcase",
+      look: "After hours",
+      accent: "#18c4d8",
+      bg: "#07090d",
+      density: "grid",
+      photoDataUrl: ""
     };
 
-    const SCENE_DESCRIPTIONS = {
-      studio: "sleek dark obsidian studio lighting, subtle rim glow, ultra-clean product showcase",
-      aurora: "deep emerald and indigo northern lights gradient atmosphere, luminous glassmorphism",
-      sunset: "warm amber and twilight violet horizon glow, editorial SaaS launch aesthetic",
-      cyber: "futuristic cyan blueprint grid, precision telemetry lines, high-tech engineering vibe",
-      paper: "minimalist warm off-white architectural desk lighting, crisp tactile typography"
-    };
+    let savedProjects = loadSaved();
 
-    const PROMPT_STYLES = [
-      "3D isometric glass UI card floating in space, volumetric lighting, 8k render, Behance featured",
-      "Modern editorial product launch graphic, sleek typography composition, subtle grain, Dribbble style",
-      "Minimalist fintech & SaaS milestone showcase card, soft depth of field, studio macro photography",
-      "Futuristic holographic project roadmap card, clean geometric accents, high-contrast lighting"
-    ];
-
-    let promptStyleIndex = 0;
-    let milestones = loadMilestones();
-    let activeFilter = "all";
-    let searchQuery = "";
-
-    // DOM refs
-    const form = document.getElementById("milestoneForm");
-    const editIdInput = document.getElementById("editId");
-    const projectInput = document.getElementById("projectName");
-    const titleInput = document.getElementById("milestoneTitle");
-    const statusInput = document.getElementById("status");
-    const priorityInput = document.getElementById("priority");
-    const dueDateInput = document.getElementById("dueDate");
-    const progressPctInput = document.getElementById("progressPct");
-    const progressPctLabel = document.getElementById("progressPctLabel");
-    const themeInput = document.getElementById("cardTheme");
-    const sceneInput = document.getElementById("cardScene");
-    const notesInput = document.getElementById("notes");
-
-    const previewStage = document.getElementById("previewStage");
-    const prevProject = document.getElementById("prevProject");
-    const prevTitle = document.getElementById("prevTitle");
-    const prevBadge = document.getElementById("prevBadge");
-    const prevNotes = document.getElementById("prevNotes");
-    const prevPctText = document.getElementById("prevPctText");
-    const prevBarFill = document.getElementById("prevBarFill");
-    const prevPriority = document.getElementById("prevPriority");
-    const prevDate = document.getElementById("prevDate");
-    const aiPromptOutput = document.getElementById("aiPromptOutput");
-
-    const formHeading = document.getElementById("formHeading");
-    const saveBtn = document.getElementById("saveBtn");
-    const cancelEditBtn = document.getElementById("cancelEditBtn");
-    const cardsGrid = document.getElementById("cardsGrid");
-    const searchInput = document.getElementById("searchInput");
-    const filterBar = document.getElementById("filterBar");
-    const toastEl = document.getElementById("toast");
+    const projectTitle = document.getElementById("projectTitle");
+    const kickerTag = document.getElementById("kickerTag");
+    const healthPct = document.getElementById("healthPct");
+    const metricRight = document.getElementById("metricRight");
+    const storyInput = document.getElementById("storyInput");
+    const charCounter = document.getElementById("charCounter");
+    const toast = document.getElementById("toast");
 
     function showToast(msg) {
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
+      toast.textContent = msg;
+      toast.classList.add("show");
       clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => toastEl.classList.remove("show"), 2300);
+      showToast._t = setTimeout(() => toast.classList.remove("show"), 2200);
     }
 
-    function loadMilestones() {
+    function loadSaved() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          return [
-            {
-              id: makeId(),
-              project: "Starloom SaaS",
-              title: "Core MVP & Live Deployment",
-              status: "completed",
-              priority: "High",
-              dueDate: "",
-              progress: 100,
-              theme: "midnight",
-              scene: "studio",
-              notes: "Published initial version, verified mobile Safari layout, and enabled local storage."
-            }
-          ];
-        }
-        const parsed = JSON.parse(raw);
+        const raw = localStorage.getItem(STORE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
         return Array.isArray(parsed) ? parsed : [];
       } catch {
         return [];
       }
     }
 
-    function makeId() {
-      return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+    function persistSaved() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(savedProjects));
+      document.getElementById("savedCount").textContent = savedProjects.length;
     }
 
-    function saveMilestones() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(milestones));
+    function parseStoryLines(raw) {
+      const lines = String(raw || "")
+        .split(/\n+/)
+        .map((l) => l.replace(/^[•\-*]\s*/, "").trim())
+        .filter(Boolean);
+      const sub = lines[0] || "Turn your latest progress into a story worth sharing.";
+      const bullets = lines.slice(1).slice(0, 5);
+      return { sub, bullets };
     }
 
-    function escapeHtml(str) {
-      return String(str || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    function getCurrentDraft() {
-      return {
-        project: projectInput.value.trim() || "Project Name",
-        title: titleInput.value.trim() || "Milestone Title",
-        status: statusInput.value,
-        priority: priorityInput.value,
-        dueDate: dueDateInput.value,
-        progress: Number(progressPctInput.value || 0),
-        theme: themeInput.value,
-        scene: sceneInput.value,
-        notes: notesInput.value.trim()
-      };
-    }
-
-    function updateLivePreview() {
-      const d = getCurrentDraft();
-      progressPctLabel.textContent = `${d.progress}%`;
-
-      previewStage.className = `preview-stage scene-${d.scene} theme-${d.theme}`;
-      prevProject.textContent = d.project.toUpperCase();
-      prevTitle.textContent = d.title;
-
-      prevBadge.className = `badge status-${d.status}`;
-      prevBadge.textContent = STATUS_LABELS[d.status] || d.status;
-
-      prevNotes.textContent = d.notes || "Add deliverables or release notes to preview them on the card.";
-      prevPctText.textContent = `${d.progress}%`;
-      prevBarFill.style.width = `${d.progress}%`;
-      prevPriority.textContent = `Priority: ${d.priority}`;
-      prevDate.textContent = d.dueDate ? `Target: ${d.dueDate}` : "No target date";
-
-      updateAiPrompt(d);
-    }
-
-    function updateAiPrompt(d) {
-      const sceneDesc = SCENE_DESCRIPTIONS[d.scene] || SCENE_DESCRIPTIONS.studio;
-      const styleDesc = PROMPT_STYLES[promptStyleIndex % PROMPT_STYLES.length];
-      const statusLabel = STATUS_LABELS[d.status] || d.status;
-      aiPromptOutput.textContent =
-        `Create a sleek project milestone announcement card titled "${d.title}" for "${d.project}" showing "${statusLabel}" (${d.progress}% complete), ${sceneDesc}, ${styleDesc}, clean visual hierarchy, no distorted text.`;
-    }
-
-    // Bind live preview updates to all inputs
-    [projectInput, titleInput, statusInput, priorityInput, dueDateInput, progressPctInput, themeInput, sceneInput, notesInput]
-      .forEach((el) => el.addEventListener("input", () => {
-        if (el === statusInput && statusInput.value === "completed") {
-          progressPctInput.value = 100;
-        }
-        updateLivePreview();
-      }));
-
-    document.getElementById("regenPromptBtn").addEventListener("click", () => {
-      promptStyleIndex++;
-      updateLivePreview();
-      showToast("AI prompt style updated");
-    });
-
-    document.getElementById("copyPromptBtn").addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(aiPromptOutput.textContent);
-        showToast("AI visual prompt copied");
-      } catch {
-        showToast("Could not access clipboard");
-      }
-    });
-
-    // Offline HTML5 Canvas PNG Renderer
-    function downloadCardAsPng(cardData) {
-      const d = cardData || getCurrentDraft();
-      const canvas = document.createElement("canvas");
-      const width = 1200;
-      const height = 675;
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-
-      // Scene background gradients
-      const sceneBg = {
-        studio: ["#1e293b", "#070b14"],
-        aurora: ["#064e3b", "#1e1b4b"],
-        sunset: ["#7c2d12", "#3b0764"],
-        cyber: ["#0c4a6e", "#050811"],
-        paper: ["#f8fafc", "#cbd5e1"]
-      }[d.scene] || ["#1e293b", "#070b14"];
-
-      const bgGrad = ctx.createLinearGradient(0, 0, width, height);
-      bgGrad.addColorStop(0, sceneBg[0]);
-      bgGrad.addColorStop(1, sceneBg[1]);
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, width, height);
-
-      if (d.scene === "cyber") {
-        ctx.strokeStyle = "rgba(56, 189, 248, 0.12)";
-        ctx.lineWidth = 1;
-        for (let x = 0; x < width; x += 40) {
-          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
-        }
-        for (let y = 0; y < height; y += 40) {
-          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
-        }
-      }
-
-      // Theme palette
-      const themes = {
-        midnight: { card: "rgba(15, 23, 42, 0.88)", border: "#38bdf8", text: "#f8fafc", muted: "#94a3b8", accent: "#38bdf8" },
-        emerald: { card: "rgba(6, 32, 24, 0.90)", border: "#34d399", text: "#ecfdf5", muted: "#a7f3d0", accent: "#34d399" },
-        royal: { card: "rgba(28, 19, 54, 0.90)", border: "#c084fc", text: "#faf5ff", muted: "#e9d5ff", accent: "#c084fc" },
-        amber: { card: "rgba(38, 22, 10, 0.90)", border: "#fbbf24", text: "#fffbeb", muted: "#fde68a", accent: "#fbbf24" },
-        minimal: { card: "rgba(255, 255, 255, 0.96)", border: "#0284c7", text: "#0f172a", muted: "#475569", accent: "#0284c7" }
-      };
-      const t = themes[d.theme] || themes.midnight;
-
-      // Card container
-      const pad = 72;
-      const cw = width - pad * 2;
-      const ch = height - pad * 2;
-      roundRect(ctx, pad, pad, cw, ch, 28);
-      ctx.fillStyle = t.card;
-      ctx.fill();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = t.border;
-      ctx.stroke();
-
-      // Project label
-      ctx.fillStyle = t.accent;
-      ctx.font = "700 22px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
-      ctx.fillText(d.project.toUpperCase(), pad + 48, pad + 68);
-
-      // Status pill
-      const statusText = (STATUS_LABELS[d.status] || d.status).toUpperCase();
-      ctx.font = "700 20px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
-      const pillW = ctx.measureText(statusText).width + 44;
-      roundRect(ctx, pad + cw - 48 - pillW, pad + 38, pillW, 42, 21);
-      ctx.fillStyle = "rgba(148, 163, 184, 0.2)";
-      ctx.fill();
-      ctx.fillStyle = t.accent;
-      ctx.fillText(statusText, pad + cw - 48 - pillW + 22, pad + 66);
-
-      // Milestone title
-      ctx.fillStyle = t.text;
-      ctx.font = "700 44px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
-      wrapText(ctx, d.title, pad + 48, pad + 135, cw - 96, 52, 2);
-
-      // Notes
-      ctx.fillStyle = t.muted;
-      ctx.font = "400 24px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
-      const noteText = d.notes || "Project milestone tracked via Milestone Card Studio.";
-      wrapText(ctx, noteText, pad + 48, pad + 245, cw - 96, 34, 3);
-
-      // Progress bar
-      const barY = pad + ch - 135;
-      const barW = cw - 96;
-      ctx.fillStyle = t.muted;
-      ctx.font = "600 20px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
-      ctx.fillText("Completion", pad + 48, barY - 14);
-      const pctStr = `${d.progress}%`;
-      const pctW = ctx.measureText(pctStr).width;
-      ctx.fillText(pctStr, pad + 48 + barW - pctW, barY - 14);
-
-      roundRect(ctx, pad + 48, barY, barW, 18, 9);
-      ctx.fillStyle = "rgba(148, 163, 184, 0.25)";
-      ctx.fill();
-
-      const fillW = Math.max(18, Math.round((barW * d.progress) / 100));
-      if (d.progress > 0) {
-        roundRect(ctx, pad + 48, barY, fillW, 18, 9);
-        ctx.fillStyle = t.accent;
-        ctx.fill();
-      }
-
-      // Footer metadata
-      ctx.fillStyle = t.muted;
-      ctx.font = "500 21px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
-      const dueStr = d.dueDate ? `Target: ${d.dueDate}` : "Milestone Card Studio";
-      ctx.fillText(`Priority: ${d.priority}   •   ${dueStr}`, pad + 48, pad + ch - 46);
-
-      const link = document.createElement("a");
-      const safeName = d.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "milestone-card";
-      link.download = `${safeName}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-      showToast("Downloaded PNG card");
-    }
-
-    function roundRect(ctx, x, y, w, h, r) {
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + w, y, x + w, y + h, r);
-      ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r);
-      ctx.arcTo(x, y, x + w, y, r);
-      ctx.closePath();
-    }
-
-    function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
-      const words = String(text).split(/\s+/);
-      let line = "";
-      let lineCount = 0;
-      for (let i = 0; i < words.length; i++) {
-        const testLine = line + words[i] + " ";
-        if (ctx.measureText(testLine).width > maxWidth && i > 0) {
-          ctx.fillText(line.trim(), x, y);
-          line = words[i] + " ";
-          y += lineHeight;
-          lineCount++;
-          if (lineCount >= maxLines - 1) {
-            const remaining = words.slice(i).join(" ");
-            ctx.fillText(remaining.slice(0, 58) + (remaining.length > 58 ? "..." : ""), x, y);
-            return;
-          }
-        } else {
-          line = testLine;
-        }
-      }
-      ctx.fillText(line.trim(), x, y);
-    }
-
-    document.getElementById("downloadPngBtn").addEventListener("click", () => downloadCardAsPng());
-
-    // Quick-Create Tabs
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-        document.querySelectorAll(".quick-pane").forEach((p) => p.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById(btn.dataset.tab).classList.add("active");
-      });
-    });
-
-    // Smart Text/Voice Parser -> Card Fields
-    function parsePromptIntoForm(rawText) {
-      const text = rawText.trim();
-      if (!text) {
-        showToast("Enter or speak some text first");
-        return false;
-      }
-
-      let project = projectInput.value.trim() || "General Project";
-      let title = text;
-      let status = "planned";
-      let priority = "Medium";
-      let progress = 25;
-      let dueDate = "";
-      let notes = "";
-
-      // Detect status keywords
-      if (/completed|done|finished|launched/i.test(text)) {
-        status = "completed";
-        progress = 100;
-      } else if (/in progress|working|building|active/i.test(text)) {
-        status = "in-progress";
-        progress = 50;
-      } else if (/blocked|stuck|waiting|issue/i.test(text)) {
-        status = "blocked";
-      }
-
-      // Detect priority
-      if (/high priority|\bhigh\b|\burgent\b/i.test(text)) priority = "High";
-      else if (/low priority|\blow\b/i.test(text)) priority = "Low";
-
-      // Detect percentage e.g. 75%
-      const pctMatch = text.match(/(\d{1,3})\s*%/);
-      if (pctMatch) {
-        progress = Math.min(100, Math.max(0, Number(pctMatch[1])));
-      }
-
-      // Detect YYYY-MM-DD date
-      const dateMatch = text.match(/\b(20\d{2}-\d{2}-\d{2})\b/);
-      if (dateMatch) dueDate = dateMatch[1];
-
-      // Parse structured "Project: Title | ..." or spoken "project X, milestone Y, notes Z"
-      if (text.includes("|")) {
-        const parts = text.split("|").map((p) => p.trim()).filter(Boolean);
-        const head = parts[0];
-        if (head.includes(":")) {
-          const [p, ...rest] = head.split(":");
-          project = p.trim() || project;
-          title = rest.join(":").trim() || title;
-        } else {
-          title = head;
-        }
-        const extraNotes = parts.slice(1).filter(
-          (p) => !/^(high|medium|low|planned|in progress|completed|blocked|\d+%)$/i.test(p) && !/^due\s+20\d{2}-\d{2}-\d{2}$/i.test(p)
-        );
-        if (extraNotes.length) notes = extraNotes.join(" • ");
-      } else {
-        const projMatch = text.match(/project\s+([^,.;]+)/i);
-        const mileMatch = text.match(/milestone\s+([^,.;]+)/i);
-        const noteMatch = text.match(/notes?\s+(.+)$/i);
-        if (projMatch) project = projMatch[1].trim();
-        if (mileMatch) title = mileMatch[1].trim();
-        else if (text.includes(":")) {
-          const [p, ...rest] = text.split(":");
-          project = p.trim();
-          title = rest.join(":").trim();
-        }
-        if (noteMatch) notes = noteMatch[1].trim();
-      }
-
-      projectInput.value = project;
-      titleInput.value = title;
-      statusInput.value = status;
-      priorityInput.value = priority;
-      progressPctInput.value = progress;
-      if (dueDate) dueDateInput.value = dueDate;
-      if (notes) notesInput.value = notes;
-
-      updateLivePreview();
-      return true;
-    }
-
-    document.getElementById("parseTextBtn").addEventListener("click", () => {
-      if (parsePromptIntoForm(document.getElementById("quickTextInput").value)) {
-        showToast("Card fields populated from text");
-      }
-    });
-
-    document.getElementById("parseAndSaveTextBtn").addEventListener("click", () => {
-      const ok = parsePromptIntoForm(document.getElementById("quickTextInput").value);
-      if (!ok) return;
-      saveCurrentFormCard();
-      document.getElementById("quickTextInput").value = "";
-    });
-
-    // Audio-to-Card (Web Speech API)
-    const recordAudioBtn = document.getElementById("recordAudioBtn");
-    const audioTranscript = document.getElementById("audioTranscript");
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let recognition = null;
-    let isRecording = false;
-
-    if (SpeechRecognition) {
-      recognition = new SpeechRecognition();
-      recognition.lang = "en-US";
-      recognition.interimResults = true;
-      recognition.continuous = false;
-
-      recognition.onresult = (event) => {
-        let transcript = "";
-        for (let i = 0; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-        }
-        audioTranscript.value = transcript;
-      };
-
-      recognition.onerror = () => {
-        isRecording = false;
-        recordAudioBtn.classList.remove("recording");
-        recordAudioBtn.textContent = "Start Voice Input";
-        showToast("Mic blocked or unavailable—type transcript instead");
-      };
-
-      recognition.onend = () => {
-        isRecording = false;
-        recordAudioBtn.classList.remove("recording");
-        recordAudioBtn.textContent = "Start Voice Input";
-      };
-    }
-
-    recordAudioBtn.addEventListener("click", () => {
-      if (!recognition) {
-        showToast("Speech recognition not supported here—use iPhone keyboard mic");
-        audioTranscript.focus();
-        return;
-      }
-      if (isRecording) {
-        recognition.stop();
-        return;
-      }
-      isRecording = true;
-      recordAudioBtn.classList.add("recording");
-      recordAudioBtn.textContent = "Listening... Tap to Stop";
-      recognition.start();
-    });
-
-    document.getElementById("applyAudioBtn").addEventListener("click", () => {
-      if (parsePromptIntoForm(audioTranscript.value)) {
-        showToast("Card populated from audio transcript");
-      }
-    });
-
-    function resetForm() {
-      editIdInput.value = "";
-      projectInput.value = "";
-      titleInput.value = "";
-      statusInput.value = "planned";
-      priorityInput.value = "Medium";
-      dueDateInput.value = "";
-      progressPctInput.value = 35;
-      notesInput.value = "";
-      formHeading.textContent = "Card Builder";
-      saveBtn.textContent = "Save Milestone Card";
-      cancelEditBtn.style.display = "none";
-      updateLivePreview();
-    }
-
-    function saveCurrentFormCard() {
-      const project = projectInput.value.trim();
-      const title = titleInput.value.trim();
-      if (!project || !title) return;
-
-      const payload = {
-        project,
-        title,
-        status: statusInput.value,
-        priority: priorityInput.value,
-        dueDate: dueDateInput.value,
-        progress: Number(progressPctInput.value || 0),
-        theme: themeInput.value,
-        scene: sceneInput.value,
-        notes: notesInput.value.trim()
-      };
-
-      if (editIdInput.value) {
-        milestones = milestones.map((m) => (m.id === editIdInput.value ? { ...m, ...payload } : m));
-        showToast("Milestone updated");
-      } else {
-        milestones.unshift({ id: makeId(), ...payload });
-        showToast("Milestone card saved");
-      }
-
-      saveMilestones();
-      resetForm();
-      render();
-    }
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      saveCurrentFormCard();
-    });
-
-    cancelEditBtn.addEventListener("click", resetForm);
-
-    window.startEdit = function (id) {
-      const item = milestones.find((m) => m.id === id);
-      if (!item) return;
-      editIdInput.value = item.id;
-      projectInput.value = item.project;
-      titleInput.value = item.title;
-      statusInput.value = item.status;
-      priorityInput.value = item.priority;
-      dueDateInput.value = item.dueDate || "";
-      progressPctInput.value = item.progress ?? 0;
-      themeInput.value = item.theme || "midnight";
-      sceneInput.value = item.scene || "studio";
-      notesInput.value = item.notes || "";
-      formHeading.textContent = "Edit Milestone Card";
-      saveBtn.textContent = "Update Milestone";
-      cancelEditBtn.style.display = "inline-block";
-      updateLivePreview();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    window.loadIntoPreview = function (id) {
-      const item = milestones.find((m) => m.id === id);
-      if (!item) return;
-      projectInput.value = item.project;
-      titleInput.value = item.title;
-      statusInput.value = item.status;
-      priorityInput.value = item.priority;
-      dueDateInput.value = item.dueDate || "";
-      progressPctInput.value = item.progress ?? 0;
-      themeInput.value = item.theme || "midnight";
-      sceneInput.value = item.scene || "studio";
-      notesInput.value = item.notes || "";
-      updateLivePreview();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      showToast("Loaded card into Live Preview");
-    };
-
-    window.downloadSavedCard = function (id) {
-      const item = milestones.find((m) => m.id === id);
-      if (item) downloadCardAsPng(item);
-    };
-
-    window.cycleStatus = function (id) {
-      const order = ["planned", "in-progress", "completed", "blocked"];
-      milestones = milestones.map((m) => {
-        if (m.id !== id) return m;
-        const next = order[(order.indexOf(m.status) + 1) % order.length];
-        const nextProgress = next === "completed" ? 100 : m.progress;
-        return { ...m, status: next, progress: nextProgress };
-      });
-      saveMilestones();
-      render();
-    };
-
-    window.deleteMilestone = function (id) {
-      milestones = milestones.filter((m) => m.id !== id);
-      if (editIdInput.value === id) resetForm();
-      saveMilestones();
-      render();
-      showToast("Milestone deleted");
-    };
-
-    function renderStats() {
-      const total = milestones.length;
-      const completed = milestones.filter((m) => m.status === "completed").length;
-      const planned = milestones.filter((m) => m.status === "planned").length;
-      const inProgress = milestones.filter((m) => m.status === "in-progress").length;
-      const blocked = milestones.filter((m) => m.status === "blocked").length;
-      const pct = total ? Math.round((completed / total) * 100) : 0;
-
-      document.getElementById("statsText").textContent = `${completed} of ${total} milestones completed (${pct}%)`;
-      document.getElementById("statusCounts").textContent =
-        `Planned: ${planned} · In Progress: ${inProgress} · Completed: ${completed} · Blocked: ${blocked}`;
-      document.getElementById("progressFill").style.width = `${pct}%`;
-    }
-
-    function getFilteredMilestones() {
-      const q = searchQuery.trim().toLowerCase();
-      return milestones.filter((m) => {
-        const matchesFilter = activeFilter === "all" || m.status === activeFilter;
-        const matchesSearch =
-          !q ||
-          m.project.toLowerCase().includes(q) ||
-          m.title.toLowerCase().includes(q) ||
-          (m.notes && m.notes.toLowerCase().includes(q));
-        return matchesFilter && matchesSearch;
-      });
-    }
-
-    function renderCards() {
-      const list = getFilteredMilestones();
-      if (!list.length) {
-        cardsGrid.innerHTML = `<div class="empty">No milestone cards match your current filter.</div>`;
-        return;
-      }
-
-      cardsGrid.innerHTML = list
-        .map((m) => {
-          const statusText = STATUS_LABELS[m.status] || m.status;
-          const dateText = m.dueDate ? `Target: ${escapeHtml(m.dueDate)}` : "No target date";
-          const pct = m.progress ?? 0;
-          return `
-            <article class="milestone-card">
-              <div>
-                <div class="card-top">
-                  <div>
-                    <div class="project-tag">${escapeHtml(m.project)}</div>
-                    <h3 class="milestone-title">${escapeHtml(m.title)}</h3>
-                  </div>
-                  <span class="badge status-${m.status}">${statusText}</span>
-                </div>
-                ${m.notes ? `<p class="notes" style="margin-top:9px;">${escapeHtml(m.notes)}</p>` : ""}
-              </div>
-              <div>
-                <div class="meta">
-                  <span>${escapeHtml(m.priority)} · <strong>${pct}%</strong></span>
-                  <span>${dateText}</span>
-                </div>
-                <div class="card-actions" style="margin-top:10px;">
-                  <button type="button" onclick="cycleStatus('${m.id}')">Next Status</button>
-                  <button type="button" onclick="loadIntoPreview('${m.id}')">Preview</button>
-                  <button type="button" onclick="downloadSavedCard('${m.id}')">PNG</button>
-                  <button type="button" onclick="startEdit('${m.id}')">Edit</button>
-                  <button type="button" class="danger" onclick="deleteMilestone('${m.id}')">Delete</button>
-                </div>
-              </div>
-            </article>
-          `;
-        })
+    function syncPreview() {
+      const pct = Math.max(0, Math.min(100, Number(healthPct.value || 0)));
+      const title = projectTitle.value.trim() || "Northstar Studio";
+      const kicker = kickerTag.value.trim() || "INDEPENDENT PROJECT UPDATE / 04";
+      const rightVal = metricRight.value.trim() || "$10k MRR";
+      const { sub, bullets } = parseStoryLines(storyInput.value);
+
+      charCounter.textContent = `${storyInput.value.length} / 5000`;
+
+      document.getElementById("prevKicker").textContent = `● ${kicker.toUpperCase()}`;
+      document.getElementById("prevTitle").textContent = title;
+      document.getElementById("prevSub").textContent = sub;
+      document.getElementById("prevPct").textContent = `${pct}%`;
+      document.getElementById("prevScenePill").textContent = `${state.scene} · ↗ 12%`;
+
+      const bar = document.getElementById("prevBar");
+      bar.style.width = `${pct}%`;
+      bar.style.background = state.accent;
+
+      document.getElementById("prevLeftMetric").textContent = `${pct}% launch ready`;
+      document.getElementById("prevRightMetric").textContent = rightVal;
+
+      const ul = document.getElementById("prevBullets");
+      ul.innerHTML = bullets
+        .map((b) => `<li><span class="tick-ring">✓</span><span>${b.replace(/</g, "&lt;")}</span></li>`)
         .join("");
+
+      const frame = document.getElementById("showcaseFrame");
+      frame.classList.remove("compact", "minimal");
+      if (state.density !== "grid") frame.classList.add(state.density);
+
+      const banner = document.getElementById("bannerBox");
+      if (state.photoDataUrl) {
+        banner.style.backgroundImage = `linear-gradient(180deg, rgba(7, 9, 13, 0.25) 0%, rgba(7, 9, 13, 0.92) 100%), url("${state.photoDataUrl}")`;
+      } else {
+        banner.style.backgroundImage = `linear-gradient(180deg, rgba(7, 9, 13, 0.25) 0%, rgba(7, 9, 13, 0.92) 100%), radial-gradient(circle at 75% 25%, ${state.accent}55, ${state.bg})`;
+      }
+
+      document.getElementById("metaStory").textContent = state.scene;
+      document.getElementById("metaStyle").textContent = state.look;
+      document.getElementById("metaProgress").textContent = `${pct}% complete`;
     }
 
-    function render() {
-      renderStats();
-      renderCards();
+    [projectTitle, kickerTag, healthPct, metricRight, storyInput].forEach((el) =>
+      el.addEventListener("input", syncPreview)
+    );
+
+    // Mode tabs (Write / Voice note / AI visual)
+    document.querySelectorAll(".mode-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".mode-tab").forEach((t) => t.classList.remove("active"));
+        document.querySelectorAll(".mode-pane").forEach((p) => p.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(`pane-${tab.dataset.mode}`).classList.add("active");
+      });
+    });
+
+    // Voice dictation
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let rec = null;
+    if (SpeechRec) {
+      rec = new SpeechRec();
+      rec.lang = "en-US";
+      rec.onresult = (e) => {
+        let txt = "";
+        for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript;
+        document.getElementById("voiceTranscript").value = txt;
+      };
     }
 
-    filterBar.addEventListener("click", (e) => {
-      const btn = e.target.closest(".filter-btn");
-      if (!btn) return;
-      activeFilter = btn.dataset.filter;
-      filterBar.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderCards();
-    });
-
-    searchInput.addEventListener("input", (e) => {
-      searchQuery = e.target.value;
-      renderCards();
-    });
-
-    document.getElementById("copySummaryBtn").addEventListener("click", async () => {
-      const list = getFilteredMilestones();
-      if (!list.length) {
-        showToast("Nothing to copy");
+    document.getElementById("voiceBtn").addEventListener("click", () => {
+      if (!rec) {
+        showToast("Use your device keyboard mic or type in the box");
         return;
       }
-      const lines = ["PROJECT MILESTONE UPDATE", "--------------------------"];
-      list.forEach((m) => {
-        const label = STATUS_LABELS[m.status] || m.status;
-        const due = m.dueDate ? ` | Due: ${m.dueDate}` : "";
-        lines.push(`[${label} · ${m.progress ?? 0}%] ${m.project} — ${m.title} (${m.priority}${due})`);
-        if (m.notes) lines.push(`  • ${m.notes}`);
-      });
-      try {
-        await navigator.clipboard.writeText(lines.join("\n"));
-        showToast("Update copied to clipboard");
-      } catch {
-        showToast("Clipboard blocked—use Export JSON");
-      }
+      rec.start();
+      showToast("Listening for voice note...");
     });
 
-    document.getElementById("exportBtn").addEventListener("click", () => {
-      const blob = new Blob([JSON.stringify(milestones, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "milestone-studio-cards.json";
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast("Exported JSON backup");
+    document.getElementById("applyVoiceBtn").addEventListener("click", () => {
+      const v = document.getElementById("voiceTranscript").value.trim();
+      if (!v) return showToast("Nothing in voice transcript yet");
+      storyInput.value = storyInput.value.trim() ? `${storyInput.value.trim()}\n• ${v}` : v;
+      syncPreview();
+      showToast("Added voice note to story");
     });
 
-    const importFileInput = document.getElementById("importFileInput");
-    document.getElementById("importTriggerBtn").addEventListener("click", () => importFileInput.click());
-    importFileInput.addEventListener("change", (e) => {
+    // AI visual prompt helper
+    document.getElementById("genAiPromptBtn").addEventListener("click", () => {
+      const prompt = `Editorial ${state.scene.toLowerCase()} backdrop for "${projectTitle.value.trim() || "Project"}", ${state.look.toLowerCase()} color mood, moody studio lighting, sleek glass and dark architectural surfaces, high contrast, no text clutter.`;
+      document.getElementById("aiPromptBox").value = prompt;
+      showToast("Generated AI visual prompt");
+    });
+
+    document.getElementById("copyAiPromptBtn").addEventListener("click", async () => {
+      const val = document.getElementById("aiPromptBox").value.trim();
+      if (!val) return showToast("Generate or enter a prompt first");
+      await navigator.clipboard.writeText(val);
+      showToast("Copied AI visual prompt");
+    });
+
+    // Photo upload
+    const photoInput = document.getElementById("photoInput");
+    document.getElementById("uploadPhotoBtn").addEventListener("click", () => photoInput.click());
+    photoInput.addEventListener("change", (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        try {
-          const imported = JSON.parse(String(reader.result));
-          if (!Array.isArray(imported)) throw new Error();
-          milestones = imported;
-          saveMilestones();
-          render();
-          showToast("Imported milestones");
-        } catch {
-          showToast("Invalid JSON file");
-        }
+        state.photoDataUrl = String(reader.result);
+        syncPreview();
+        showToast("Background photo applied");
       };
-      reader.readAsText(file);
-      e.target.value = "";
+      reader.readAsDataURL(file);
     });
 
-    updateLivePreview();
-    render();
-  </script>
-  <!-- ADD-ON: Editorial Card Drawer (Paste right before </body>) -->
-<style>
-  #edAddonFab {
-    position: fixed;
-    bottom: 18px;
-    left: 18px;
-    z-index: 90;
-    background: #ffffff;
-    color: #090b0f;
-    border: 1px solid #cbd5e1;
-    border-radius: 999px;
-    padding: 10px 15px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
-  }
+    document.getElementById("clearPhotoBtn").addEventListener("click", () => {
+      state.photoDataUrl = "";
+      syncPreview();
+      showToast("Reset to studio backdrop");
+    });
 
-  #edAddonModal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    background: rgba(0, 0, 0, 0.78);
-    backdrop-filter: blur(4px);
-    padding: 16px;
-    overflow-y: auto;
-  }
+    // Scene & Look & Density selection
+    document.getElementById("sceneGrid").addEventListener("click", (e) => {
+      const card = e.target.closest(".scene-card");
+      if (!card) return;
+      document.querySelectorAll(".scene-card").forEach((c) => c.classList.remove("selected"));
+      card.classList.add("selected");
+      state.scene = card.dataset.scene;
+      syncPreview();
+    });
 
-  #edAddonModal.open {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-  }
+    document.getElementById("lookGrid").addEventListener("click", (e) => {
+      const chip = e.target.closest(".look-chip");
+      if (!chip) return;
+      document.querySelectorAll(".look-chip").forEach((c) => c.classList.remove("selected"));
+      chip.classList.add("selected");
+      state.look = chip.dataset.look;
+      state.accent = chip.dataset.accent;
+      state.bg = chip.dataset.bg;
+      syncPreview();
+    });
 
-  .ed-modal-box {
-    width: 100%;
-    max-width: 520px;
-    background: #090a0d;
-    color: #f8fafc;
-    border: 1px solid #1e2330;
-    border-radius: 16px;
-    padding: 18px;
-    margin: 20px auto;
-  }
+    document.getElementById("densityRow").addEventListener("click", (e) => {
+      const btn = e.target.closest(".density-btn");
+      if (!btn) return;
+      document.querySelectorAll(".density-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.density = btn.dataset.density;
+      syncPreview();
+    });
 
-  .ed-modal-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-  }
-
-  .ed-modal-top h3 {
-    margin: 0;
-    font-size: 1rem;
-  }
-
-  .ed-modal-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .ed-modal-btn {
-    background: #141820;
-    color: #f8fafc;
-    border: 1px solid #262d3d;
-    border-radius: 8px;
-    padding: 7px 11px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    cursor: pointer;
-  }
-
-  .ed-modal-btn.light {
-    background: #ffffff;
-    color: #090b0f;
-    border-color: #ffffff;
-    font-weight: 600;
-  }
-
-  .ed-sheet {
-    background: #090a0d;
-    border: 1px solid #1b1f29;
-    border-radius: 14px;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .ed-row-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .ed-kicker-txt {
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #8e96a4;
-    font-weight: 600;
-  }
-
-  .ed-tag-box {
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #9aa2b1;
-    background: #141820;
-    border: 1px solid #1e2330;
-    padding: 4px 9px;
-    border-radius: 6px;
-    font-weight: 600;
-  }
-
-  .ed-main-title {
-    margin: 0;
-    font-size: 1.5rem;
-    line-height: 1.15;
-    letter-spacing: -0.03em;
-  }
-
-  .ed-desc-txt {
-    margin: 6px 0 0;
-    font-size: 0.88rem;
-    color: #8e96a4;
-  }
-
-  .ed-sec-border {
-    border-top: 1px solid #1a1e28;
-    border-bottom: 1px solid #1a1e28;
-    padding: 12px 0;
-  }
-
-  .ed-micro-label {
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #8e96a4;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-
-  .ed-health-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .ed-pct-num {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1;
-  }
-
-  .ed-pill-badge {
-    font-size: 0.74rem;
-    background: #141820;
-    border: 1px solid #1e2330;
-    color: #9aa2b1;
-    padding: 4px 10px;
-    border-radius: 7px;
-  }
-
-  .ed-track {
-    height: 7px;
-    background: #141820;
-    border-radius: 999px;
-    overflow: hidden;
-  }
-
-  .ed-fill {
-    height: 100%;
-    background: #ffffff;
-    border-radius: 999px;
-  }
-
-  .ed-two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    border-bottom: 1px solid #1a1e28;
-    padding-bottom: 12px;
-  }
-
-  .ed-col-k {
-    font-size: 0.74rem;
-    color: #8e96a4;
-  }
-
-  .ed-col-v {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-top: 2px;
-  }
-
-  .ed-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .ed-list li {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-size: 0.84rem;
-    color: #9aa2b1;
-  }
-
-  .ed-tick {
-    width: 18px;
-    height: 18px;
-    border-radius: 999px;
-    border: 1px solid #2c4c3b;
-    color: #22c55e;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.68rem;
-    flex-shrink: 0;
-  }
-</style>
-
-<button type="button" id="edAddonFab">Editorial Card</button>
-
-<div id="edAddonModal" aria-hidden="true">
-  <div class="ed-modal-box">
-    <div class="ed-modal-top">
-      <h3>Editorial Card View</h3>
-      <div class="ed-modal-actions">
-        <button type="button" class="ed-modal-btn" id="edSyncBtn">Sync Form</button>
-        <button type="button" class="ed-modal-btn light" id="edExportPngBtn">Download 2x PNG</button>
-        <button type="button" class="ed-modal-btn" id="edCloseBtn">Close</button>
-      </div>
-    </div>
-
-    <div class="ed-sheet" id="edSheetPreview">
-      <div class="ed-row-top">
-        <span class="ed-kicker-txt" id="edKicker">● INDEPENDENT PROJECT UPDATE / 04</span>
-        <span class="ed-tag-box" id="edStudioTag">NS / STUDIO</span>
-      </div>
-
-      <div>
-        <h4 class="ed-main-title" id="edTitle">First Monetization Milestone</h4>
-        <p class="ed-desc-txt" id="edSub">We've officially crossed into monetized territory with our first active subscription</p>
-      </div>
-
-      <div class="ed-sec-border">
-        <div class="ed-micro-label">PROJECT HEALTH</div>
-        <div class="ed-health-flex">
-          <span class="ed-pct-num" id="edPctText">68%</span>
-          <span class="ed-pill-badge" id="edStatusBadge">On track</span>
-        </div>
-        <div class="ed-track">
-          <div class="ed-fill" id="edBar" style="width:68%;"></div>
-        </div>
-      </div>
-
-      <div class="ed-two-col">
-        <div>
-          <div class="ed-col-k">Progress</div>
-          <div class="ed-col-v" id="edLeftVal">68% complete</div>
-        </div>
-        <div>
-          <div class="ed-col-k">Highlights</div>
-          <div class="ed-col-v" id="edRightVal">4 key updates</div>
-        </div>
-      </div>
-
-      <div>
-        <div class="ed-row-top" style="margin-bottom:8px;">
-          <span class="ed-micro-label" style="margin:0;">MILESTONES</span>
-          <span class="ed-micro-label" style="margin:0;" id="edCount">3/3</span>
-        </div>
-        <ul class="ed-list" id="edChecklist"></ul>
-      </div>
-
-      <div class="ed-col-k" id="edFoot">View project details ↗</div>
-    </div>
-  </div>
-</div>
-
-<script>
-  (function () {
-    const modal = document.getElementById("edAddonModal");
-    const fab = document.getElementById("edAddonFab");
-    const closeBtn = document.getElementById("edCloseBtn");
-    const syncBtn = document.getElementById("edSyncBtn");
-    const exportBtn = document.getElementById("edExportPngBtn");
-
-    function readFormData() {
-      const proj = document.getElementById("projectName")?.value.trim() || "Independent Project Update / 04";
-      const title = document.getElementById("milestoneTitle")?.value.trim() || "First Monetization Milestone";
-      const statusVal = document.getElementById("status")?.value || "completed";
-      const priorityVal = document.getElementById("priority")?.value || "High";
-      const dueVal = document.getElementById("dueDate")?.value || "";
-      const pctVal = Number(document.getElementById("progressPct")?.value ?? 68);
-      const rawNotes = document.getElementById("notes")?.value.trim() || "";
-
-      const lines = rawNotes.split(/\n+/).map((s) => s.trim()).filter(Boolean);
-      const sub = lines[0] || "We've officially crossed into monetized territory with our first active subscription";
-      const rest = lines.slice(1).join(";");
-      const items = rest
-        ? rest.split(/[;•]+/).map((s) => s.trim()).filter(Boolean).slice(0, 4)
-        : ["Active Subscriptions: 1", "First subscriber conversion unlocked", "Core payout flow live"];
-
-      const statusMap = {
-        "planned": "Planned",
-        "in-progress": "On track",
-        "completed": "Completed",
-        "blocked": "Blocked"
+    // Save & Render My Projects
+    function saveCurrentShowcase() {
+      const item = {
+        id: String(Date.now()),
+        title: projectTitle.value.trim() || "Northstar Studio",
+        kicker: kickerTag.value.trim() || "INDEPENDENT PROJECT UPDATE / 04",
+        pct: Number(healthPct.value || 0),
+        rightVal: metricRight.value.trim() || "$10k MRR",
+        story: storyInput.value,
+        scene: state.scene,
+        look: state.look,
+        accent: state.accent
       };
-
-      return {
-        kicker: `● ${proj.toUpperCase()}`,
-        tag: "NS / STUDIO",
-        title,
-        sub,
-        pct: Math.max(0, Math.min(100, pctVal)),
-        statusLabel: `${statusMap[statusVal] || statusVal} · ${priorityVal}`,
-        rightMetric: `${items.length} key updates`,
-        items,
-        foot: dueVal ? `Target: ${dueVal} · View project details ↗` : "View project details ↗"
-      };
+      savedProjects.unshift(item);
+      persistSaved();
+      renderSaved();
+      showToast("Showcase saved to My projects");
     }
 
-    function renderEditorialAddon() {
-      const d = readFormData();
-      document.getElementById("edKicker").textContent = d.kicker;
-      document.getElementById("edStudioTag").textContent = d.tag;
-      document.getElementById("edTitle").textContent = d.title;
-      document.getElementById("edSub").textContent = d.sub;
-      document.getElementById("edPctText").textContent = `${d.pct}%`;
-      document.getElementById("edStatusBadge").textContent = d.statusLabel;
-      document.getElementById("edBar").style.width = `${d.pct}%`;
-      document.getElementById("edLeftVal").textContent = `${d.pct}% complete`;
-      document.getElementById("edRightVal").textContent = d.rightMetric;
-      document.getElementById("edCount").textContent = `${d.items.length}/${d.items.length}`;
-      document.getElementById("edFoot").textContent = d.foot;
+    document.getElementById("makeShowcaseBtn").addEventListener("click", () => {
+      syncPreview();
+      saveCurrentShowcase();
+    });
 
-      const ul = document.getElementById("edChecklist");
-      ul.innerHTML = d.items
-        .map((txt) => `<li><span class="ed-tick">✓</span><span>${txt.replace(/</g, "&lt;")}</span></li>`)
+    document.getElementById("saveProjectBtn").addEventListener("click", saveCurrentShowcase);
+
+    function renderSaved() {
+      const grid = document.getElementById("savedGrid");
+      document.getElementById("savedCount").textContent = savedProjects.length;
+      if (!savedProjects.length) {
+        grid.innerHTML = `<div style="color:var(--muted);font-size:0.86rem;">No saved showcases yet. Click "Make it a showcase" or "Save to My projects".</div>`;
+        return;
+      }
+      grid.innerHTML = savedProjects
+        .map(
+          (p) => `
+          <div class="saved-card">
+            <div>
+              <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;">${p.scene} · ${p.pct}%</div>
+              <div style="font-weight:700;margin-top:3px;">${p.title.replace(/</g, "&lt;")}</div>
+              <div style="font-size:0.78rem;color:var(--muted);margin-top:2px;">${p.look} · ${p.rightVal.replace(/</g, "&lt;")}</div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button type="button" class="btn-ghost" onclick="loadProject('${p.id}')">Load</button>
+              <button type="button" class="btn-ghost" onclick="deleteProject('${p.id}')">Delete</button>
+            </div>
+          </div>`
+        )
         .join("");
     }
 
-    function exportEditorial2xPng() {
-      const d = readFormData();
+    window.loadProject = function (id) {
+      const p = savedProjects.find((x) => x.id === id);
+      if (!p) return;
+      projectTitle.value = p.title;
+      kickerTag.value = p.kicker;
+      healthPct.value = p.pct;
+      metricRight.value = p.rightVal;
+      storyInput.value = p.story;
+      state.scene = p.scene;
+      state.look = p.look;
+      state.accent = p.accent || "#18c4d8";
+      syncPreview();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      showToast("Loaded project into canvas");
+    };
+
+    window.deleteProject = function (id) {
+      savedProjects = savedProjects.filter((x) => x.id !== id);
+      persistSaved();
+      renderSaved();
+      showToast("Removed project");
+    };
+
+    document.getElementById("copySummaryBtn").addEventListener("click", async () => {
+      const { sub, bullets } = parseStoryLines(storyInput.value);
+      const text = [
+        `${projectTitle.value.trim()} (${healthPct.value}% · ${state.scene})`,
+        sub,
+        ...bullets.map((b) => `• ${b}`)
+      ].join("\n");
+      await navigator.clipboard.writeText(text);
+      showToast("Summary copied");
+    });
+
+    document.getElementById("exportJsonBtn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(savedProjects, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "showcaseify-projects.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Exported JSON");
+    });
+
+    // 2x Canvas PNG Export
+    document.getElementById("downloadPngBtn").addEventListener("click", () => {
       const scale = 2;
       const w = 1080;
       const h = 1350;
@@ -1903,117 +1264,104 @@
       const ctx = canvas.getContext("2d");
       ctx.scale(scale, scale);
 
-      ctx.fillStyle = "#060709";
+      ctx.fillStyle = "#05070a";
       ctx.fillRect(0, 0, w, h);
 
-      const pad = 54;
+      const pad = 52;
       const cw = w - pad * 2;
       const ch = h - pad * 2;
-      ctx.fillStyle = "#090a0d";
-      ctx.strokeStyle = "#1b1f29";
+      ctx.fillStyle = "#0a0d12";
+      ctx.strokeStyle = "#1b212c";
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.roundRect(pad, pad, cw, ch, 26);
       ctx.fill();
       ctx.stroke();
 
-      let y = pad + 56;
       const x = pad + 44;
+      let y = pad + 62;
       const maxW = cw - 88;
+      const pct = Math.max(0, Math.min(100, Number(healthPct.value || 0)));
+      const { sub, bullets } = parseStoryLines(storyInput.value);
 
-      ctx.fillStyle = "#8e96a4";
-      ctx.font = "600 18px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText(d.kicker, x, y);
-
+      ctx.fillStyle = "#8a93a2";
       ctx.font = "600 17px -apple-system, BlinkMacSystemFont, sans-serif";
-      const tw = ctx.measureText(d.tag).width + 28;
-      ctx.fillStyle = "#141820";
-      ctx.beginPath();
-      ctx.roundRect(x + maxW - tw, y - 22, tw, 36, 8);
-      ctx.fill();
-      ctx.fillStyle = "#9aa2b1";
-      ctx.fillText(d.tag, x + maxW - tw + 14, y + 2);
+      ctx.fillText(`SHOWCASE STUDIO · ${state.scene.toUpperCase()}`, x, y);
 
-      y += 66;
-      ctx.fillStyle = "#f8fafc";
-      ctx.font = "700 50px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText(d.title.slice(0, 34), x, y);
-
-      y += 46;
-      ctx.fillStyle = "#8e96a4";
-      ctx.font = "400 24px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText(d.sub.slice(0, 58), x, y);
+      y += 62;
+      ctx.fillStyle = "#f5f7fa";
+      ctx.font = "700 48px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText((projectTitle.value.trim() || "Northstar Studio").slice(0, 34), x, y);
 
       y += 42;
-      ctx.fillStyle = "#8e96a4";
-      ctx.font = "600 18px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillStyle = "#8a93a2";
+      ctx.font = "400 23px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(sub.slice(0, 62), x, y);
+
+      y += 58;
+      ctx.fillStyle = "#8a93a2";
+      ctx.font = "600 17px -apple-system, BlinkMacSystemFont, sans-serif";
       ctx.fillText("PROJECT HEALTH", x, y);
 
-      y += 54;
-      ctx.fillStyle = "#f8fafc";
-      ctx.font = "700 64px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText(`${d.pct}%`, x, y);
+      y += 56;
+      ctx.fillStyle = "#f5f7fa";
+      ctx.font = "700 66px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(`${pct}%`, x, y);
 
-      y += 32;
-      ctx.fillStyle = "#141820";
+      y += 30;
+      ctx.fillStyle = "#131822";
       ctx.beginPath();
       ctx.roundRect(x, y, maxW, 12, 6);
       ctx.fill();
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = state.accent;
       ctx.beginPath();
-      ctx.roundRect(x, y, Math.max(12, Math.round((maxW * d.pct) / 100)), 12, 6);
+      ctx.roundRect(x, y, Math.max(12, Math.round((maxW * pct) / 100)), 12, 6);
       ctx.fill();
 
-      y += 64;
-      ctx.fillStyle = "#8e96a4";
-      ctx.font = "500 20px -apple-system, BlinkMacSystemFont, sans-serif";
+      y += 62;
+      ctx.fillStyle = "#8a93a2";
+      ctx.font = "500 19px -apple-system, BlinkMacSystemFont, sans-serif";
       ctx.fillText("Progress", x, y);
-      ctx.fillText("Highlights", x + maxW / 2, y);
+      ctx.fillText("Revenue", x + maxW / 2, y);
 
       y += 32;
-      ctx.fillStyle = "#f8fafc";
+      ctx.fillStyle = "#f5f7fa";
       ctx.font = "600 26px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText(`${d.pct}% complete`, x, y);
-      ctx.fillText(d.rightMetric, x + maxW / 2, y);
+      ctx.fillText(`${pct}% launch ready`, x, y);
+      ctx.fillText(metricRight.value.trim() || "$10k MRR", x + maxW / 2, y);
 
-      y += 64;
-      ctx.fillStyle = "#8e96a4";
-      ctx.font = "600 18px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText("MILESTONES", x, y);
-
-      y += 38;
-      for (const item of d.items) {
-        ctx.strokeStyle = "#22c55e";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(x + 12, y - 6, 12, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.fillStyle = "#9aa2b1";
+      y += 58;
+      for (const b of bullets) {
+        ctx.fillStyle = "#22c55e";
+        ctx.font = "700 22px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText("✓", x, y);
+        ctx.fillStyle = "#cbd5e1";
         ctx.font = "400 22px -apple-system, BlinkMacSystemFont, sans-serif";
-        ctx.fillText(item.slice(0, 52), x + 36, y);
+        ctx.fillText(b.slice(0, 56), x + 32, y);
         y += 42;
       }
 
-      ctx.fillStyle = "#8e96a4";
-      ctx.font = "400 20px -apple-system, BlinkMacSystemFont, sans-serif";
-      ctx.fillText(d.foot, x, pad + ch - 42);
+      ctx.fillStyle = "#8a93a2";
+      ctx.font = "500 19px -apple-system, BlinkMacSystemFont, sans-serif";
+      ctx.fillText(`showcaseify.  ·  Style: ${state.look}`, x, pad + ch - 38);
 
       const a = document.createElement("a");
-      a.download = "editorial-milestone-2x.png";
+      a.download = "showcaseify-card-2x.png";
       a.href = canvas.toDataURL("image/png");
       a.click();
-    }
-
-    fab.addEventListener("click", () => {
-      renderEditorialAddon();
-      modal.classList.add("open");
+      showToast("Downloaded 2x PNG");
     });
-    closeBtn.addEventListener("click", () => modal.classList.remove("open"));
-    syncBtn.addEventListener("click", renderEditorialAddon);
-    exportBtn.addEventListener("click", exportEditorial2xPng);
-  })();
-</script>
-<!-- END ADD-ON -->
 
+    document.getElementById("navProjects").addEventListener("click", () => {
+      document.getElementById("savedProjectsSection").scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.getElementById("navPro").addEventListener("click", () => {
+      showToast("All studio presets & 2x PNG export are unlocked locally");
+    });
+
+    syncPreview();
+    renderSaved();
+  </script>
 </body>
 </html>
